@@ -40,3 +40,31 @@ To run the server test suite :
 
 1. start the server `./test_client.py`
 2. run the test suite `./run_client_test.sh`
+
+
+Test case :
+
+1. Correct response message
+2. Incorrect response length 
+3. Invalid response code
+4. Invalid response timestamp
+5. Incorrect response signature
+
+Output :
+
+```shell
+[CORRECT RESPONSE EXPECTED]
+[ANSWER IS: OK]
+
+[INCORRECT LENGTH EXPECTED]
+[ANSWER WITH INVALID LENGTH]
+
+[INCORRECT CODE EXPECTED]
+[ANSWER WITH INVALID CODE]
+
+[INCORRECT TIMESTAMP EXPECTED]
+[ANSWER WITH INVALID TIMESTAMP][TIMESTAMP = -1]
+
+[INCORRECT MAC EXPECTED]
+[ANSWER WITH WRONG MAC]
+```
