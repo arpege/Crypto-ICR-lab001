@@ -1,7 +1,7 @@
 # ICR - labo 001
 
 ## Test suite for the server side
-Make sure that all `.py` have execution privilege and python3 is installed on the machine.
+Make sure that all `.py` have execution privilege and python3 is installed on the machine. Run `chmod +x test_server.py && chmod +x test_client.py && chmod +x server.py && chmod +x client.py` to add privileges.
 
 To run the server test suite :
 
