@@ -73,14 +73,14 @@ Output :
 
 *Which strategy is using SSH?*
 SSH use Encrypt-and-MAC
-(Breaking and Provably Repairing the SSH Authenticated Encryption Scheme: A Case Study of the Encode-then-Encrypt-and-MAC Paradigm)[http://homes.cs.washington.edu/~yoshi/papers/SSH/ssh.pdf]
+[Breaking and Provably Repairing the SSH Authenticated Encryption Scheme: A Case Study of the Encode-then-Encrypt-and-MAC Paradigm](http://homes.cs.washington.edu/~yoshi/papers/SSH/ssh.pdf)
 
 *Which strategy is using TLS?*
 TLS use MAC-then-Encrypt strategie
-(TLS Protocol Version 1.2)[https://tools.ietf.org/html/rfc5246#section-6]
+[TLS Protocol Version 1.2](https://tools.ietf.org/html/rfc5246#section-6)
 
 *Which one of the above three strategies is it recommended to use in practice?*
 
 > theoretically "good" way is to apply the MAC on the encrypted data. This is called "encrypt-then-MAC". See this question on crypto.SE. As a summary, when you apply the MAC on the encrypted data, then whatever the MAC does cannot reveal anything on the plaintext data, and, similarly, since you verify the MAC before decrypting, then this will protect you against many chosen ciphertext attacks.
 
-Source : (Combining MAC and Encryption)[http://security.stackexchange.com/questions/26033/combining-mac-and-encryption]
+Source : [Combining MAC and Encryption](http://security.stackexchange.com/questions/26033/combining-mac-and-encryption)
