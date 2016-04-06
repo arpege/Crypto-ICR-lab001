@@ -22,6 +22,8 @@ KEY_E = binascii.a2b_hex ("6168b12773512824fc4166cc1cb41b4fad7edd63ff5bfd90302c2
 TIMESTAMP = -1
 timestamp_mutex = threading.Lock ()
 
+
+
 def new_timestamp ():
     global TIMESTAMP
     timestamp_mutex.acquire()
@@ -51,7 +53,7 @@ def prepare_OK_message ():
     return b'\x08' + t + ciphertext + tag
 
 def prepare_error_message (error_type):
-    if error_type == "MAC" or error_type == "PAD" or error_type == "TSP":
+    if error_type == "MAC" or error_type == "PAD" or error_type == "TSP" or error_type == "CODE" or error_type == "TMP" or error_type == "WMAC":
 
         t = struct.pack('>q', new_timestamp())
         cleartext = b'\x00' * 16
@@ -69,6 +71,15 @@ def prepare_error_message (error_type):
         elif error_type == "TSP":
             print ("[TSP ERROR][LAST USED TIMESTAMP: %s]" % str(TIMESTAMP))
             return b'\x09' + t + ciphertext + tag
+        elif error_type == "CODE":
+            print ("[GENERATING INVALID CODE...]")
+            return b'\x05' + t + ciphertext + tag
+        elif error_type == "TMP":
+            print ("[GENERATING INVALID TIMESTAMP...]")
+            return b'\x08' + struct.pack('>q', -1) + ciphertext + tag
+        elif error_type == "WMAC":
+            print ("[GENERATING INVALID MAC...]")
+            return b'\x08' + t + ciphertext + tag[:8] + b'\x00\x00'
 
 def decrypt_check_data (data):
     global TIMESTAMP
@@ -116,7 +127,8 @@ def decrypt_check_data (data):
                 return (r_cleartext[:-count], prepare_OK_message())
 
 class ThreadedUDPRequestHandler (socketserver.BaseRequestHandler):
-
+    CPT_ERROR = 0
+    
     def handle (self):
 
         received_data  = self.request[0].strip ()
@@ -128,11 +140,34 @@ class ThreadedUDPRequestHandler (socketserver.BaseRequestHandler):
                                                           client_address,
                                                           port))
         print ("[ENCRYPTED DATA] %s" % received_data)
-        (clean_data, msg) = decrypt_check_data (received_data)
+        
+        if ThreadedUDPRequestHandler.CPT_ERROR == 0:
+            print ("[RETURN CORRECT RESPONSE]")
+            (clean_data, msg) = decrypt_check_data (received_data)
+        elif ThreadedUDPRequestHandler.CPT_ERROR == 1:
+            print ("[RETURN INVALID LENGTH]")
+            (clean_data, msg) = decrypt_check_data (received_data)
+            (clean_data, msg) = (clean_data, msg[:10]) # truncate the return message
+        elif ThreadedUDPRequestHandler.CPT_ERROR == 2:
+            print ("[RETURN INVALID CODE]")
+            # code must be lesser than 0x0C and grather than 0x07 
+            # client.py : if answer[0] >= 0x08 and answer[0] <= 0x0B:
+            (clean_data, msg) = (None, prepare_error_message ("CODE"))
+            print ("[INVALID CODE GENERATED]")
+        elif ThreadedUDPRequestHandler.CPT_ERROR == 3:
+            (clean_data, msg) = (None, prepare_error_message ("TMP"))
+            print ("[INVALID TIMESTAMP GENERATED]")
+        elif ThreadedUDPRequestHandler.CPT_ERROR == 4:
+            (clean_data, msg) = (None, prepare_error_message ("WMAC"))
+            print ("[INVALID MAC GENERATED]")
+        
+        
         if clean_data is not None:
             print ("[DECRYPTED DATA] %s" % clean_data)
         # We send back the answer
         socket.sendto(msg, self.client_address)
+        ThreadedUDPRequestHandler.CPT_ERROR += 1
+        ThreadedUDPRequestHandler.CPT_ERROR %= 5
 
 class ThreadedUDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
     pass
