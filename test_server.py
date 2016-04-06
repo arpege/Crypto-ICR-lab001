@@ -55,6 +55,20 @@ def encrypt_data_wrong_pad (timestamp, data):
 
     return b'\x00' + timestamp + ciphertext + tag
 
+  
+def encrypt_data_wrong_mac (timestamp, data):
+
+    IV = b'\x00'*8 + timestamp
+
+    # Padding operation
+    to_pad = 16 - (len(data) % 16)
+    plaintext = data.encode() + struct.pack('B', to_pad) * to_pad
+    ciphertext = AES.new (client.KEY_E, AES.MODE_CBC, IV).encrypt (plaintext)
+    tag = HMAC.new (client.KEY_A, plaintext, SHA256).digest()[:8] + b'\x00\x00'
+
+    return b'\x00' + timestamp + ciphertext + tag
+
+
 
 if __name__ == '__main__' :
   
@@ -83,15 +97,15 @@ if __name__ == '__main__' :
       timestamp = struct.pack('>q', t+4)
       sock.sendall (encrypt_data_wrong_pad (timestamp, 'datadata'))
 
-      # Receive data from the server and shut down
       client.parse_answer (t+4, sock.recv(35))
       
       print("\ntest for mac : ")
       print("timestamp : " + str(int(t)+5))
       print("Result expected : MAC ERROR")
       
-      timestamp = struct.pack('>q', t+5)
-      crypt = client.encrypt_data(timestamp, 'data') + b'\x00'
+      timestamp = struct.pack('>q', t+6)
+      crypt = encrypt_data_wrong_mac(timestamp, 'data')
+      print(crypt)
       sock.sendall (crypt)
       client.parse_answer (t+5, sock.recv(35))
       
