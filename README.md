@@ -1,7 +1,7 @@
 # ICR - labo 001
 
 ## Test suite for the server side
-Make sure that all `.py` have execution privilege and python3 is installed on the machine. Run `chmod +x test_server.py && chmod +x test_client.py && chmod +x server.py && chmod +x client.py` to add privileges.
+Make sure that all `.py` have execution privilege and python3 is installed on the machine. Run `chmod +x test_server.py && chmod +x server.py` to add privileges.
 
 To run the server test suite :
 
@@ -15,7 +15,7 @@ Test case :
 3. Wrong padding
 4. Wrong MAC
 
-Output expected :
+Output :
 
 ```shell
 Result expected : OK
@@ -32,6 +32,11 @@ Result expected : MAC ERROR
 ```
 
 ## Test suite for the client side
-Make sure that all `.py` have execution privilege and python3 is installed on the machine.
+Make sure that all `.py` and bash script have execution privilege and python3 is installed on the machine. Run `chmod +x test_client.py && chmod +x client.py` and `chmod +x run_client_test.sh` to add privileges.
+
+The `test_client.py` file is a modified version of the regular server. This version send responses containing volunteers errors to test the reaction of the client. A bash script `run_client_test.sh` is used to make all client's calls.
 
 To run the server test suite :
+
+1. start the server `./test_client.py`
+2. run the test suite `./run_client_test.sh`
