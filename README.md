@@ -1,6 +1,8 @@
 # ICR - labo 001
 
-## Test suite for the server side
+## Task 1
+
+### Test suite for the server side
 Make sure that all `.py` have execution privilege and python3 is installed on the machine. Run `chmod +x test_server.py && chmod +x server.py` to add privileges.
 
 To run the server test suite :
@@ -31,7 +33,7 @@ Result expected : MAC ERROR
 [ANSWER IS: MAC ERROR]
 ```
 
-## Test suite for the client side
+### Test suite for the client side
 Make sure that all `.py` and bash script have execution privilege and python3 is installed on the machine. Run `chmod +x test_client.py && chmod +x client.py` and `chmod +x run_client_test.sh` to add privileges.
 
 The `test_client.py` file is a modified version of the regular server. This version send responses containing volunteers errors to test the reaction of the client. A bash script `run_client_test.sh` is used to make all client's calls.
@@ -69,7 +71,7 @@ Output :
 [ANSWER WITH WRONG MAC]
 ```
 
-# Questions 1
+## Questions 1
 
 ### #1
 
@@ -94,3 +96,19 @@ Source : [Combining MAC and Encryption](http://security.stackexchange.com/questi
 The "nonce IV" must be impredictable.
 
 [Difference between a nonce and IV](http://crypto.stackexchange.com/questions/16000/difference-between-a-nonce-and-iv)
+
+## Task 2
+
+### #1
+
+The original attack was published in 2002 by Serge Vaudenay. In 2010 the attack was applied to several web frameworks, including JavaServer Faces, Ruby on Rails and ASP.NET. In 2012 it was shown to be effective against some hardened security devices. A new variant, the Lucky Thirteen attack, published in 2013, used a timing side-channel to re-open the vulnerability even in implementations that had previously been fixed. As of early 2014, the attack is no longer considered a threat in real-life operation.
+
+### #2
+
+[TODO]
+
+### #3
+
+
+
+## Question 2

@@ -93,6 +93,7 @@ def main (t, m):
         # Connect to server and send data
         sock.connect((HOST, PORT))
         # sock.sendall (encrypt_data (struct.pack('>q', int(timestamp)), data))
+        print (encrypt_data (timestamp, data))
         sock.sendall (encrypt_data (timestamp, data))
 
         # Receive data from the server and shut down
