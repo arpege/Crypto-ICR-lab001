@@ -93,7 +93,7 @@ Source : [Combining MAC and Encryption](http://security.stackexchange.com/questi
 
 **Instead of using a random IV, the CBC mode implements a nonce-based approach. What can you tell about its security?**
 
-The "nonce IV" must be impredictable.
+First, the "nonce IV" must be impredictable. If we use the current timestamp, it's broken. Second, it must not be the same twice nonce. With this method, we use only 8 bits, we have much less opportunity and arrive more quickly when the nonce will be repeated.
 
 [Difference between a nonce and IV](http://crypto.stackexchange.com/questions/16000/difference-between-a-nonce-and-iv)
 
@@ -105,7 +105,9 @@ The original attack was published in 2002 by Serge Vaudenay. In 2010 the attack 
 
 ### #2
 
-[TODO]
+In the padding oracle attack, the client uses the server responses to determine if the padding of the cipher text sent is right. In this way, by changing the bits of the first block used by the CBC mode, the customer can gradually determined the intermediate state of the next block. The intermediate state in deciphering is after the secret key, but before the XOR with the previous block. Knowing the intermediate state and the cipher text of the previous block, we can retreave the clear text.
+
+Source of inspiration : [The Padding Oracle Attack - why crypto is terrifying](http://robertheaton.com/2013/07/29/padding-oracle-attack/)
 
 ### #3
 
