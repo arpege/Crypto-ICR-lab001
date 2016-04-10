@@ -319,7 +319,12 @@ It allows you to assuer that the initialization vector is always different.
 
 **Can you think a way for a malicious engineer to trigger a denial-of-service attack on the device?**
 
-[TODO]
+We can crash the server in many different ways :
+
+1. Set the first byte to different that `0x00`
+2. Make an overflow on the timestamp (i.e set to `\xff\xff\xff\xff\xff\xff\xff\xff`)
+3. Send a message that have a size of 15 bytes
+4. ...
 
 ## Task 4
 
