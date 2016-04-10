@@ -208,6 +208,115 @@ In the implementation I have desactived the timestamp and HMAC checks, but the c
 
 **To fix against this attack we can check HMAC before checking padding.**
 
+### #2
+
+**before :**
+
+```python
+def decrypt_check_data (data):
+    global TIMESTAMP
+
+    # First, we check that the data length looks like to be correct
+    # 0x00 + TTTTTTTT + I + MMMMMMMMMM = 20 bytes
+    if (len(data) - 19) % 16 != 0:
+        return (None, None)
+    else:
+        ## Data parsing
+
+        # Checking that first byte is 0x00
+        if data[0] != 0:
+            return (None, None)
+        r_timestamp  = data[1:9]
+        r_ciphertext = data[9:-10]
+        r_tag        = data[-10:]
+
+        # Checking that the timestamp is acceptable
+        t = struct.unpack('>q', r_timestamp)
+        if (t[0] > TIMESTAMP):
+            # We accept and update it
+            print ("[ACCEPTED TIMESTAMP = %s]" % str(t[0]))
+            set_timestamp (t[0])
+        else:
+            return (None, prepare_error_message("TSP"))
+
+        IV = b'\x00' * 8 + r_timestamp
+        r_cleartext = AES.new (KEY_E, AES.MODE_CBC, IV).decrypt (r_ciphertext)
+
+        # Checking padding
+        count = r_cleartext[-1]
+        if count == 0 or count > 16:
+            return (None, prepare_error_message("PAD"))
+        else:
+            for i in range (1, count+1):
+                if r_cleartext[-i] != count:
+                    return (None, prepare_error_message("PAD"))
+
+            # Checking authentication tag
+            if (HMAC.new(KEY_A, r_cleartext, SHA256).digest()[:10] != r_tag):
+                # INVALID MAC
+                return (None, prepare_error_message ("MAC"))
+            else:
+                return (r_cleartext[:-count], prepare_OK_message())
+```
+
+**after fix :**
+
+```python
+def decrypt_check_data (data):
+    global TIMESTAMP
+
+    # First, we check that the data length looks like to be correct
+    # 0x00 + TTTTTTTT + I + MMMMMMMMMM = 20 bytes
+    if (len(data) - 19) % 16 != 0:
+        return (None, None)
+    else:
+        ## Data parsing
+
+        # Checking that first byte is 0x00
+        if data[0] != 0:
+            return (None, None)
+        r_timestamp  = data[1:9]
+        r_ciphertext = data[9:-10]
+        r_tag        = data[-10:]
+
+        # Checking that the timestamp is acceptable
+        t = struct.unpack('>q', r_timestamp)
+        if (t[0] > TIMESTAMP):
+            # We accept and update it
+            print ("[ACCEPTED TIMESTAMP = %s]" % str(t[0]))
+            set_timestamp (t[0])
+        else:
+            return (None, prepare_error_message("TSP"))
+
+        IV = b'\x00' * 8 + r_timestamp
+        r_cleartext = AES.new (KEY_E, AES.MODE_CBC, IV).decrypt (r_ciphertext)
+        
+        # Checking authentication tag
+        if (HMAC.new(KEY_A, r_cleartext, SHA256).digest()[:10] != r_tag):
+            # INVALID MAC
+            return (None, prepare_error_message ("MAC"))
+        else:
+            # Checking padding
+            count = r_cleartext[-1]
+            if count == 0 or count > 16:
+                return (None, prepare_error_message("PAD"))
+            else:
+                for i in range (1, count+1):
+                    if r_cleartext[-i] != count:
+                        return (None, prepare_error_message("PAD"))
+            return (r_cleartext[:-count], prepare_OK_message())
+```
+
 ## Question 3
+
+### #1
+
+**What is the security role of the timestamp in the protocol?**
+
+
+
+### #2
+
+**Can you think a way for a malicious engineer to trigger a denial-of-service attack on the device?**
 
 ## Task 4
