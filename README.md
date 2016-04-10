@@ -313,10 +313,16 @@ def decrypt_check_data (data):
 
 **What is the security role of the timestamp in the protocol?**
 
-
+It allows you to assuer that the initialization vector is always different.
 
 ### #2
 
 **Can you think a way for a malicious engineer to trigger a denial-of-service attack on the device?**
 
+[TODO]
+
 ## Task 4
+
+**List all remaining security vulnerabilities you have found in this protocol.**
+
+1. [TODO]
