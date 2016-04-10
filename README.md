@@ -101,16 +101,35 @@ First, the "nonce IV" must be impredictable. If we use the current timestamp, it
 
 ### #1
 
+**Write a three-paragraphs summary of the history of padding oracle attacks.**
+
 The original attack was published in 2002 by Serge Vaudenay. In 2010 the attack was applied to several web frameworks, including JavaServer Faces, Ruby on Rails and ASP.NET. In 2012 it was shown to be effective against some hardened security devices. A new variant, the Lucky Thirteen attack, published in 2013, used a timing side-channel to re-open the vulnerability even in implementations that had previously been fixed. As of early 2014, the attack is no longer considered a threat in real-life operation.
 
 ### #2
 
-In the padding oracle attack, the client uses the server responses to determine if the padding of the cipher text sent is right. In this way, by changing the bits of the first block used by the CBC mode, the customer can gradually determined the intermediate state of the next block. The intermediate state in deciphering is after the secret key, but before the XOR with the previous block. Knowing the intermediate state and the cipher text of the previous block, we can retreave the clear text.
+**Explain how a malicious client can turn the server into a decryption oracle able to decrypt any observed encrypted packet (without the malicious client knowing the encryption key).**
+
+In the padding oracle attack, the client uses the server responses to determine if the padding of the cipher text sent is right. In this way, by changing the bits of the first "custom" block (C1) used by the CBC mode, we can search and find to have the value right value for the clear text block (P2'). WWith this value we can gradually determined the intermediate state (I2) of the searched block (C2). 
+
+The intermediate state in deciphering is after the secret key, but before the XOR with the previous block. Knowing the intermediate state (I2) and the cipher text of the previous block (C1), we can retreave the clear text (P2).
 
 Source of inspiration : [The Padding Oracle Attack - why crypto is terrifying](http://robertheaton.com/2013/07/29/padding-oracle-attack/)
 
 ### #3
 
+**Write a program in the language of your choice simulating this attack.**
 
+The implementation of this attack have been maded in python, by modify a little the server side. The check for the timestamp and HMAC have been disabled to facilities the work. To run the attack :
+
+1. start the server for testing padding oracle attack `./server_oracle.py`
+2. run the malicious client `./malicious_client.py`
+
+**Study case**
+
+An hacker have sniffed a cipher text providing in a other client :
+
+> \x00\x00\x00\x00\x00\x00\x00\x00\x0c\x8a\r=&\xf6z\xea\xea\xa1i\xb7Y\xfan\xb3E\xcfH<\xccwQ\xc7b\xed\xe3b3\xa2\x9c~\xda\xea\x06\x04\x97s\xd5\x92\xe8.\xe6\xd3c\x12\xb64\xa2J\xdd\xa3\xee\x9fBq\xd8\x15Hl\x11\xc8\xa2^-\xd6k\x05\xf3\xa7\t\xb6\x90\xdd`\xc8j\x80\xb6\x0eG\x08\x83{J#[\xb9\xdc\xdcc\xcf\xb0J\xac>\xa4W\xdf\xff\x87\xc8\x8f3\xf6\xa3\x0c
+
+this cipher text is croped in multiple blocks (header, first block and second block). The malicious client tried to deciphering the second block of 16 bytes.
 
 ## Question 2
