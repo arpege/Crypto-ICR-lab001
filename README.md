@@ -1,6 +1,6 @@
 # ICR - labo 001
 
-## Task 1
+## Task 1
 
 ### Test suite for the server side
 Make sure that all `.py` have execution privilege and python3 is installed on the machine. Run `chmod +x test_server.py && chmod +x server.py` to add privileges.
@@ -189,3 +189,25 @@ while i < 16:
 >message de pour 
 
 ## Question 2
+
+**What is the average complexity of your attack in terms of queries to the padding oracle for decrypting a n-byte message?**
+
+Normaly, we can't change or know the IV as it should be. This has the effect of not being able to deciphering the first block in certain case. For each restant blocks, they are 256 possibilites for eache byte. So I think, maximum `( n - 16 ) * 256`
+
+## Task 3
+
+### #1
+
+**Propose a modification of the protocol that makes it resistant to padding oracle attacks, while keeping as much as possible the same functionalities.**
+
+>Namely, a "padding oracle" leaks some information about secret data through how it reacts to maliciously crafted invalid input. A good protocol will first validate the input data through a MAC before considering decryption and its corollary, padding processing. That's what the "encrypt-then-MAC" construction is about.
+
+Source : [How to protect against “padding oracle attacks.”](http://security.stackexchange.com/questions/38942/how-to-protect-against-padding-oracle-attacks)
+
+In the implementation I have desactived the timestamp and HMAC checks, but the code is working the same. If we can catch the padding error before other error, we can determine if the padding is ok, even if an error is throw.
+
+**To fix against this attack we can check HMAC before checking padding.**
+
+## Question 3
+
+## Task 4
